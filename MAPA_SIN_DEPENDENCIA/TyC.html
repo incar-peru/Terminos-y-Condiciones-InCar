@@ -1,0 +1,1265 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>InCar Perú – Términos Legales y Mapa Offline Huancayo</title>
+    <meta name="theme-color" content="#059669">
+    <link rel="manifest" href="./manifest.json">
+    <link rel="stylesheet" href="./maplibre-gl.css">
+    <style>
+        :root {
+            --primary: #059669;
+            --primary-dark: #047857;
+            --dark: #111827;
+            --slate: #1f2937;
+            --text: #374151;
+            --muted: #6b7280;
+            --bg: #f3f4f6;
+            --card: #ffffff;
+            --border: #e5e7eb;
+            --map-bg: #0f172a;
+            --map-card: #1e293b;
+            --map-border: #334155;
+            --map-text: #f8fafc;
+            --map-muted: #94a3b8;
+        }
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            background-color: var(--bg);
+            color: var(--text);
+            line-height: 1.75;
+            font-size: 15px;
+        }
+        body.mapa-activo {
+            background-color: var(--map-bg);
+            color: var(--map-text);
+            padding-bottom: 120px;
+        }
+
+        /* Barra Superior Unificada */
+        .topbar {
+            background: #0f172a;
+            color: #f8fafc;
+            border-bottom: 1px solid #334155;
+            position: sticky;
+            top: 0;
+            z-index: 40;
+            padding: 10px 14px;
+        }
+        .topbar-inner {
+            max-width: 900px;
+            margin: 0 auto;
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            justify-content: space-between;
+            gap: 10px;
+        }
+        .brand {
+            font-weight: 800;
+            font-size: 1.08rem;
+            color: #10b981;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .status-badge {
+            font-size: 0.72rem;
+            padding: 3px 9px;
+            border-radius: 99px;
+            font-weight: 600;
+            background: rgba(16, 185, 129, 0.15);
+            color: #34d399;
+            border: 1px solid rgba(16, 185, 129, 0.3);
+        }
+        .nav-tabs {
+            display: flex;
+            gap: 8px;
+            width: 100%;
+        }
+        .nav-btn {
+            flex: 1;
+            padding: 9px 12px;
+            border-radius: 8px;
+            border: 1px solid #334155;
+            background: #1e293b;
+            color: #cbd5e1;
+            font-size: 0.85rem;
+            font-weight: 700;
+            cursor: pointer;
+            text-align: center;
+        }
+        .nav-btn.active {
+            background: var(--primary);
+            color: #ffffff;
+            border-color: var(--primary);
+        }
+
+        .panel { display: none; }
+        .panel.active { display: block; }
+
+        /* Banner CTA dentro de TyC */
+        .tyc-wrap {
+            padding: 20px 14px 36px;
+        }
+        .quick-banner {
+            max-width: 900px;
+            margin: 0 auto 16px;
+            background: #ecfdf5;
+            border: 1px solid #a7f3d0;
+            border-radius: 10px;
+            padding: 14px 18px;
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            justify-content: space-between;
+            gap: 10px;
+        }
+        .quick-banner-text {
+            font-size: 0.9rem;
+            color: #064e3b;
+            font-weight: 600;
+        }
+        .quick-banner-actions {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+        .btn-cta {
+            background: var(--primary);
+            color: #fff;
+            border: none;
+            padding: 9px 14px;
+            border-radius: 8px;
+            font-weight: 700;
+            font-size: 0.84rem;
+            cursor: pointer;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .btn-cta.dark {
+            background: var(--dark);
+        }
+
+        /* Estilos Términos y Condiciones */
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            background: var(--card);
+            padding: 44px 38px;
+            border-radius: 10px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+            border: 1px solid var(--border);
+        }
+        .container header {
+            border-bottom: 2px solid var(--dark);
+            padding-bottom: 24px;
+            margin-bottom: 32px;
+        }
+        .doc-type {
+            text-transform: uppercase;
+            letter-spacing: 1.2px;
+            font-size: 0.75rem;
+            font-weight: 700;
+            color: var(--primary);
+            margin-bottom: 8px;
+            display: block;
+        }
+        h1 {
+            color: var(--dark);
+            font-size: 1.95rem;
+            font-weight: 800;
+            line-height: 1.25;
+            margin-bottom: 12px;
+        }
+        .meta-info {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 16px;
+            font-size: 0.85rem;
+            color: var(--muted);
+        }
+        .legal-notice {
+            background: #f8fafc;
+            border: 1px solid #cbd5e1;
+            border-left: 4px solid var(--dark);
+            padding: 18px 20px;
+            border-radius: 6px;
+            margin-bottom: 32px;
+            font-size: 0.92rem;
+            color: var(--slate);
+        }
+        .toc {
+            background: #f9fafb;
+            border: 1px solid var(--border);
+            padding: 20px 24px;
+            border-radius: 8px;
+            margin-bottom: 36px;
+        }
+        .toc-title {
+            font-weight: 700;
+            color: var(--dark);
+            margin-bottom: 10px;
+            font-size: 0.95rem;
+            text-transform: uppercase;
+        }
+        .toc ul {
+            list-style: none;
+            padding: 0;
+            columns: 2;
+            column-gap: 24px;
+        }
+        .toc li {
+            margin-bottom: 6px;
+            font-size: 0.88rem;
+            text-align: left;
+        }
+        .toc a {
+            color: var(--primary-dark);
+            text-decoration: none;
+        }
+        .toc a:hover {
+            text-decoration: underline;
+        }
+        .container h2 {
+            color: var(--dark);
+            font-size: 1.25rem;
+            font-weight: 700;
+            margin-top: 36px;
+            margin-bottom: 14px;
+            padding-bottom: 6px;
+            border-bottom: 1px solid var(--border);
+        }
+        .container h3 {
+            color: var(--slate);
+            font-size: 1.05rem;
+            font-weight: 600;
+            margin-top: 20px;
+            margin-bottom: 8px;
+        }
+        .container p {
+            margin-bottom: 14px;
+            text-align: justify;
+        }
+        .container ul, .container ol {
+            margin-bottom: 16px;
+            padding-left: 24px;
+        }
+        .container li {
+            margin-bottom: 8px;
+            text-align: justify;
+        }
+        .container strong {
+            color: var(--dark);
+        }
+        footer {
+            margin-top: 48px;
+            padding-top: 24px;
+            border-top: 1px solid var(--border);
+            text-align: center;
+            font-size: 0.85rem;
+            color: var(--muted);
+        }
+
+        /* Estilos Mapa Vectorial Offline Huancayo */
+        .map-container {
+            max-width: 720px;
+            margin: 0 auto;
+            padding: 14px;
+        }
+        .mode-switch {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 8px;
+            margin-bottom: 12px;
+        }
+        .mode-btn {
+            background: var(--map-card);
+            border: 1px solid var(--map-border);
+            color: var(--map-muted);
+            padding: 10px 8px;
+            border-radius: 10px;
+            font-size: 0.84rem;
+            font-weight: 700;
+            cursor: pointer;
+        }
+        .mode-btn.active {
+            background: rgba(16, 185, 129, 0.18);
+            color: #34d399;
+            border-color: #10b981;
+        }
+        .map-box {
+            background: #0b1120;
+            border: 1px solid var(--map-border);
+            border-radius: 12px;
+            padding: 8px;
+            margin-bottom: 12px;
+        }
+        .map-label {
+            font-size: 0.76rem;
+            color: var(--map-muted);
+            margin-bottom: 6px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 8px;
+        }
+        .map-wrap {
+            position: relative;
+            width: 100%;
+            height: 340px;
+            border-radius: 10px;
+            overflow: hidden;
+            background: #0d1526;
+        }
+        #huancayo-map {
+            width: 100%;
+            height: 100%;
+        }
+
+        /* Pin Central Fijo (estilo Uber/InDrive) */
+        .center-pin-overlay {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -100%);
+            z-index: 12;
+            pointer-events: none;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            transition: transform 0.14s ease-out;
+        }
+        .center-pin-overlay.moving {
+            transform: translate(-50%, -115%);
+        }
+        .pin-head {
+            width: 34px;
+            height: 34px;
+            border-radius: 50% 50% 50% 0;
+            transform: rotate(-45deg);
+            background: #10b981;
+            border: 3px solid #ffffff;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.55);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .pin-head.recojo {
+            background: #f59e0b;
+        }
+        .pin-core {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background: #022c22;
+            transform: rotate(45deg);
+        }
+        .pin-stem {
+            width: 3px;
+            height: 7px;
+            background: #ffffff;
+            border-radius: 2px;
+            margin-top: -2px;
+        }
+        .pin-shadow {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 14px;
+            height: 5px;
+            background: rgba(0, 0, 0, 0.5);
+            border-radius: 50%;
+            transform: translate(-50%, -50%);
+            z-index: 11;
+            pointer-events: none;
+        }
+
+        /* Controles flotantes sobre el mapa */
+        .coords-pill {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            z-index: 15;
+            background: rgba(15, 23, 42, 0.9);
+            border: 1px solid #334155;
+            color: #e2e8f0;
+            font-size: 0.72rem;
+            font-weight: 600;
+            padding: 5px 9px;
+            border-radius: 8px;
+            max-width: 68%;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            pointer-events: none;
+        }
+        .btn-gps {
+            position: absolute;
+            bottom: 12px;
+            left: 10px;
+            z-index: 15;
+            background: #0f172a;
+            color: #34d399;
+            border: 1px solid #10b981;
+            border-radius: 8px;
+            padding: 7px 10px;
+            font-size: 0.76rem;
+            font-weight: 700;
+            cursor: pointer;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.45);
+        }
+        .map-error-box {
+            display: none;
+            position: absolute;
+            inset: 0;
+            background: rgba(15, 23, 42, 0.94);
+            color: #f8fafc;
+            z-index: 20;
+            padding: 20px;
+            text-align: center;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+            gap: 8px;
+            font-size: 0.85rem;
+        }
+        .map-error-box.visible {
+            display: flex;
+        }
+
+        .search-box { position: relative; margin-bottom: 10px; }
+        input#search {
+            width: 100%;
+            padding: 12px 14px;
+            border-radius: 10px;
+            border: 1px solid var(--map-border);
+            background: var(--map-card);
+            color: var(--map-text);
+            font-size: 0.95rem;
+            outline: none;
+        }
+        input#search:focus { border-color: #10b981; }
+        .tabs { display: flex; gap: 6px; overflow-x: auto; padding-bottom: 8px; margin-bottom: 10px; scrollbar-width: none; }
+        .tabs::-webkit-scrollbar { display: none; }
+        .tab {
+            background: var(--map-card);
+            border: 1px solid var(--map-border);
+            color: var(--map-muted);
+            padding: 6px 12px;
+            border-radius: 99px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            white-space: nowrap;
+            cursor: pointer;
+        }
+        .tab.active { background: var(--primary); color: #fff; border-color: var(--primary); }
+
+        .list { display: flex; flex-direction: column; gap: 8px; }
+        .item {
+            background: var(--map-card);
+            border: 1px solid var(--map-border);
+            padding: 12px 14px;
+            border-radius: 10px;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 8px;
+        }
+        .item.selected { border-color: #10b981; background: rgba(16, 185, 129, 0.12); }
+        .item-title { font-weight: 600; font-size: 0.92rem; color: #f1f5f9; }
+        .item-sub { font-size: 0.78rem; color: var(--map-muted); margin-top: 2px; }
+        .zone-tag { font-size: 0.7rem; padding: 2px 7px; border-radius: 6px; background: #0f172a; color: #94a3b8; white-space: nowrap; }
+
+        .bottom-bar {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: var(--map-card);
+            border-top: 1px solid var(--map-border);
+            padding: 12px 16px;
+            z-index: 30;
+            box-shadow: 0 -4px 15px rgba(0,0,0,0.45);
+        }
+        .bottom-inner { max-width: 720px; margin: 0 auto; }
+        .selected-info { font-size: 0.82rem; color: #cbd5e1; margin-bottom: 8px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .btn-send {
+            width: 100%;
+            background: #10b981;
+            color: #022c22;
+            font-weight: 800;
+            font-size: 0.98rem;
+            padding: 13px;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 8px;
+        }
+        .btn-send:disabled { background: #334155; color: #64748b; cursor: not-allowed; }
+
+        .hyo-dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background: #f59e0b;
+            border: 2px solid #ffffff;
+            cursor: pointer;
+            box-shadow: 0 1px 4px rgba(0,0,0,0.6);
+        }
+
+        @media (max-width: 680px) {
+            .container { padding: 28px 20px; }
+            h1 { font-size: 1.5rem; }
+            .toc ul { columns: 1; }
+            .map-wrap { height: 300px; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="topbar">
+    <div class="topbar-inner">
+        <div class="brand">🚕 InCar Perú • Huancayo</div>
+        <span class="status-badge" id="offline-status">Guardado para uso offline</span>
+        <div class="nav-tabs">
+            <button class="nav-btn active" id="tab-tyc" type="button">⚖️ Términos y Condiciones</button>
+            <button class="nav-btn" id="tab-mapa" type="button">🗺️ Mapa Offline Huancayo</button>
+        </div>
+    </div>
+</div>
+
+<!-- PANEL 1: TÉRMINOS Y CONDICIONES -->
+<section class="panel active tyc-wrap" id="panel-tyc">
+    <div class="quick-banner">
+        <div class="quick-banner-text">
+            ⚡ <strong>Mapa Vectorial Offline incluido:</strong> Las calles reales de Huancayo se guardan en caché para usarlas sin internet.
+        </div>
+        <div class="quick-banner-actions">
+            <button class="btn-cta" id="btn-abrir-mapa" type="button">🗺️ Abrir Mapa Offline</button>
+            <a class="btn-cta dark" href="https://wa.me/51955343460?text=ACEPTO">💬 Volver a WhatsApp InCar</a>
+        </div>
+    </div>
+
+    <div class="container">
+        <header>
+            <span class="doc-type">Contrato de Adhesión y Uso de Plataforma Tecnológica</span>
+            <h1>Términos y Condiciones Generales de Uso – InCar</h1>
+            <div class="meta-info">
+                <span><strong>Jurisdicción:</strong> República del Perú</span>
+                <span><strong>Canal Oficial:</strong> Servicio Automatizado vía WhatsApp (+51 955 343 460)</span>
+                <span><strong>Vigencia:</strong> Noviembre 2026</span>
+            </div>
+        </header>
+
+        <div class="legal-notice">
+            <strong>AVISO LEGAL Y ACEPTACIÓN EXPRESA:</strong> El presente documento constituye un acuerdo legal vinculante entre usted (en adelante, el <strong>"Usuario"</strong>, ya sea en calidad de <strong>"Pasajero"</strong> o <strong>"Conductor"</strong>) e <strong>InCar</strong>. Al iniciar una conversación, enviar su ubicación, responder encuestas interactivas, remitir documentación o solicitar/aceptar un servicio de movilidad a través de nuestro canal automatizado en WhatsApp, usted declara haber leído, comprendido y aceptado íntegramente todas las cláusulas aquí estipuladas. Si no está de acuerdo con estos términos, deberá abstenerse de utilizar el servicio.
+        </div>
+
+        <nav class="toc">
+            <div class="toc-title">Índice de Cláusulas</div>
+            <ul>
+                <li><a href="#clausula-1">1. Definiciones e Interpretación</a></li>
+                <li><a href="#clausula-2">2. Naturaleza Jurídica del Servicio</a></li>
+                <li><a href="#clausula-3">3. Requisitos de Acceso y Registro</a></li>
+                <li><a href="#clausula-4">4. Validación Documental de Conductores</a></li>
+                <li><a href="#clausula-5">5. Operatividad del Servicio vía WhatsApp</a></li>
+                <li><a href="#clausula-6">6. Tarifas, Pagos y Comisiones</a></li>
+                <li><a href="#clausula-7">7. Promociones, Bonos y Beneficios</a></li>
+                <li><a href="#clausula-8">8. Seguridad, Zonas Restringidas y Antifraude</a></li>
+                <li><a href="#clausula-9">9. Obligaciones y Prohibiciones</a></li>
+                <li><a href="#clausula-10">10. Cancelaciones, Reclamos y Soporte IA</a></li>
+                <li><a href="#clausula-11">11. Suspensión y Terminación de Cuenta</a></li>
+                <li><a href="#clausula-12">12. Protección de Datos Personales</a></li>
+                <li><a href="#clausula-13">13. Limitación de Responsabilidad e Indemnidad</a></li>
+                <li><a href="#clausula-14">14. Propiedad Intelectual</a></li>
+                <li><a href="#clausula-15">15. Modificaciones y Legislación Aplicable</a></li>
+            </ul>
+        </nav>
+
+        <h2 id="clausula-1">1. Definiciones e Interpretación</h2>
+        <p>Para efectos del presente instrumento, los términos que se indican a continuación tendrán el siguiente significado:</p>
+        <ul>
+            <li><strong>InCar (o la "Plataforma"):</strong> Sistema tecnológico de intermediación automatizada que opera nativamente a través de la mensajería de WhatsApp, permitiendo la conexión en tiempo real entre demanda y oferta de transporte privado.</li>
+            <li><strong>Pasajero:</strong> Toda persona natural mayor de edad con capacidad legal que utiliza el canal de WhatsApp de InCar para solicitar un servicio de traslado urbano o interurbano.</li>
+            <li><strong>Conductor:</strong> Toda persona natural independiente, debidamente habilitada y registrada en la base de datos de InCar, que cuenta con vehículo propio o autorizado y documentación vigente para prestar servicios de transporte por cuenta propia.</li>
+            <li><strong>Viaje o Servicio:</strong> El traslado físico efectuado por un Conductor a favor de un Pasajero, desde un punto de origen hasta un punto de destino acordados mediante la intermediación de InCar.</li>
+            <li><strong>Zonas Rojas o Restringidas:</strong> Áreas geográficas delimitadas en el sistema de InCar por criterios de seguridad ciudadana, incidencia delictiva o inaccesibilidad vial, en las cuales la Plataforma restringe o condiciona la prestación del servicio.</li>
+        </ul>
+
+        <h2 id="clausula-2">2. Naturaleza Jurídica del Servicio</h2>
+        <p><strong>2.1. Intermediación Tecnológica Exclusiva:</strong> InCar es estrictamente una plataforma digital de intermediación y contacto. Su función se limita a facilitar herramientas tecnológicas de geolocalización, cálculo referencial de tarifas y mensajería automatizada para que Pasajeros y Conductores independientes puedan concertar traslados de manera directa.</p>
+        <p><strong>2.2. Ausencia de Relación Laboral y de Transporte:</strong> InCar <strong>no es una empresa de transporte público ni privado</strong>, no posee flota vehicular propia, no administra unidades móviles ni presta servicios de logística o conducción. El Conductor actúa bajo su propia cuenta, riesgo y responsabilidad, sin que exista relación laboral, subordinación, dependencia, mandato, sociedad ni representación entre el Conductor e InCar.</p>
+        <p><strong>2.3. Contrato Directo entre Partes:</strong> El contrato de transporte se celebra única, directa y exclusivamente entre el Pasajero y el Conductor en el momento en que este último acepta la solicitud de viaje difundida por el sistema.</p>
+
+        <h2 id="clausula-3">3. Requisitos de Acceso y Registro</h2>
+        <p><strong>3.1. Capacidad Legal:</strong> El uso de InCar está reservado exclusivamente para personas mayores de dieciocho (18) años con plena capacidad de ejercicio conforme al Código Civil Peruano. Los menores de edad solo podrán abordar vehículos acompañados de un adulto responsable.</p>
+        <p><strong>3.2. Veracidad de la Información:</strong> El Usuario garantiza que su número telefónico asociado a WhatsApp es de su titularidad y que toda información proporcionada durante las interacciones con el asistente automatizado es exacta, veraz y actual.</p>
+
+        <h2 id="clausula-4">4. Validación Documental de Conductores</h2>
+        <p><strong>4.1. Requisitos Obligatorios:</strong> Para solicitar su alta en el sistema y recibir solicitudes de viaje, el aspirante a Conductor deberá remitir a través del flujo de validación los siguientes documentos legibles y vigentes:</p>
+        <ol>
+            <li>Documento Nacional de Identidad (DNI) por ambas caras o Carné de Extranjería vigente.</li>
+            <li>Licencia de Conducir vigente correspondiente a la categoría del vehículo.</li>
+            <li>Certificado del Seguro Obligatorio de Accidentes de Tránsito (SOAT) o CAT vigente.</li>
+            <li>Declaración del tipo de combustible utilizado por el vehículo (Gas Licuado de Petróleo - GLP o Gasolina) para la parametrización algorítmica de costos operativos.</li>
+            <li>Fotografías claras del vehículo y placa de rodaje, según sea requerido durante el proceso de verificación.</li>
+        </ol>
+        <p><strong>4.2. Facultad de Auditoría:</strong> InCar se reserva el derecho absoluto de verificar la autenticidad y vigencia de los documentos ante las entidades públicas pertinentes (MTC, SUNARP, APESEG, entre otras), así como de rechazar cualquier solicitud de registro sin obligación de expresar causa.</p>
+
+        <h2 id="clausula-5">5. Operatividad del Servicio vía WhatsApp</h2>
+        <p><strong>5.1. Interacción Automatizada:</strong> El servicio se gestiona mediante menús interactivos, encuestas nativas de WhatsApp y procesamiento de lenguaje natural asistido por Inteligencia Artificial. El Usuario reconoce que la precisión del servicio depende directamente del envío correcto de su ubicación mediante la función nativa de ubicación de WhatsApp ("Ubicación actual" o "Ubicación en tiempo real") o el Mapa Offline oficial.</p>
+        <p><strong>5.2. Disponibilidad:</strong> InCar procura mantener la continuidad operativa de sus servidores y bots las veinticuatro (24) horas del día; no obstante, no garantiza la disponibilidad ininterrumpida del servicio frente a caídas de los servidores de Meta/WhatsApp, fallas en proveedores de telecomunicaciones, cortes de energía o mantenimientos programados del sistema.</p>
+
+        <h2 id="clausula-6">6. Tarifas, Pagos y Comisiones</h2>
+        <p><strong>6.1. Cálculo de Tarifa Sugerida:</strong> La Plataforma calcula una tarifa referencial basada en la distancia geodésica y vial entre el origen y el destino, el tiempo estimado de recorrido, la demanda horaria y el tipo de combustible declarado por el Conductor. Salvo acuerdo distinto previo al inicio del viaje, la tarifa mostrada por el sistema regirá la transacción.</p>
+        <p><strong>6.2. Modalidad de Pago Directo:</strong> El pago del valor del viaje se realiza de manera directa entre el Pasajero y el Conductor al finalizar el traslado, utilizando dinero en efectivo o billeteras digitales personales (Yape, Plin u otras) acordadas entre ambos. InCar no procesa, retiene ni intermedia dinero proveniente de los pasajeros.</p>
+        <p><strong>6.3. Comisión por Intermediación Tecnológica:</strong> Por el uso de la infraestructura tecnológica y la canalización de clientes, el Conductor acepta abonar a InCar una comisión estándar equivalente al <strong>siete por ciento (7%)</strong> sobre el monto bruto de cada viaje completado. El Conductor deberá mantener saldo a favor o liquidar las comisiones acumuladas en los plazos y cuentas oficiales que InCar disponga para mantener activa su recepción de pedidos.</p>
+
+        <h2 id="clausula-7">7. Promociones, Bonos y Beneficios</h2>
+        <p><strong>7.1. Periodo Introductorio (0% Comisión):</strong> Los Conductores nuevos debidamente aprobados gozarán de una exoneración del cien por ciento (100%) de la comisión de servicio (<strong>0% de comisión</strong>) durante sus primeros <strong>tres (3) días calendario</strong> contados desde la activación de su cuenta.</p>
+        <p><strong>7.2. Beneficio por Publicidad Vehicular (Sticker Oficial):</strong> Aquellos Conductores que adhieran de forma visible el distintivo gráfico oficial ("sticker") de InCar en su vehículo y acrediten su permanencia mediante las verificaciones fotográficas periódicas requeridas por el sistema, podrán acceder a la tarifa preferencial de <strong>0% de comisión</strong> mientras mantengan vigente dicha exhibición.</p>
+        <p><strong>7.3. Bono de Combustible:</strong> InCar podrá otorgar un incentivo equivalente a <strong>un (1) galón de combustible</strong> tras completar veinte (20) viajes efectivos dentro del periodo promocional vigente. Este beneficio está sujeto a validación rigurosa por parte de nuestro sistema antifraude; los viajes cancelados, auto-solicitados o realizados con cuentas vinculadas serán descalificados automáticamente.</p>
+        <p><strong>7.4. Descuentos Promocionales para Pasajeros:</strong> InCar podrá emitir campañas de descuento para Pasajeros (tales como descuentos del 50% con tope máximo de S/ 10.00). Dichos beneficios son personales, intransferibles, no acumulables, sujetos a disponibilidad presupuestal de campaña y no son canjeables por dinero en efectivo.</p>
+
+        <h2 id="clausula-8">8. Seguridad, Zonas Restringidas y Sistema Antifraude</h2>
+        <p><strong>8.1. Restricción de Zonas Rojas:</strong> Con el propósito de salvaguardar la integridad física de Conductores y Pasajeros, InCar mantiene una base de datos georreferenciada de <em>Zonas Rojas</em>. El sistema se reserva el derecho de rechazar automáticamente solicitudes cuyo punto de origen o destino se ubique dentro de dichos perímetros, o de emitir alertas de precaución previas a la aceptación del viaje.</p>
+        <p><strong>8.2. Auditoría Algorítmica y Antifraude:</strong> InCar implementa motores de análisis de datos e Inteligencia Artificial que auditan en tiempo real las coordenadas GPS, la velocidad promedio de desplazamiento, los tiempos de duración del viaje y los patrones de comportamiento entre números telefónicos.</p>
+        <p><strong>8.3. Tolerancia Cero a la Manipulación:</strong> Cualquier intento de simular viajes ("viajes fantasma"), manipular coordenadas GPS, crear múltiples cuentas para captar bonos de bienvenida o coludirse entre Conductor y Pasajero para defraudar incentivos resultará en la anulación inmediata de todos los bonos acumulados y la expulsión permanente e irrevocable de la Plataforma.</p>
+
+        <h2 id="clausula-9">9. Obligaciones y Prohibiciones de los Usuarios</h2>
+        <h3>9.1. Obligaciones del Conductor:</h3>
+        <ul>
+            <li>Mantener en todo momento la vigencia de su Licencia de Conducir, SOAT y Revisión Técnica Vehicular (cuando corresponda).</li>
+            <li>Conducir respetando estrictamente el Reglamento Nacional de Tránsito y los límites de velocidad establecidos.</li>
+            <li>Mantener el vehículo en condiciones óptimas de higiene, seguridad mecánica y presentación.</li>
+            <li>Tratar al Pasajero con respeto, cordialidad y abstenerse de realizar comentarios inapropiados o conductas acosadoras.</li>
+        </ul>
+        <h3>9.2. Obligaciones del Pasajero:</h3>
+        <ul>
+            <li>Estar presente en el punto de recojo indicado al momento de la llegada del Conductor.</li>
+            <li>Contar con el medio de pago acordado para cubrir la totalidad de la tarifa al concluir el viaje.</li>
+            <li>Abstenerse de transportar sustancias ilícitas, armas, materiales inflamables, explosivos o mercancía de procedencia ilegal.</li>
+            <li>Cuidar la integridad del vehículo; cualquier daño material ocasionado por dolo o negligencia del Pasajero (incluyendo manchas o suciedad extrema) deberá ser resarcido directamente al Conductor.</li>
+        </ul>
+
+        <h2 id="clausula-10">10. Cancelaciones, Reclamos y Soporte Asistido por IA</h2>
+        <p><strong>10.1. Política de Cancelación:</strong> El Pasajero podrá cancelar su solicitud sin penalidad antes de que un Conductor acepte el viaje o dentro de los primeros dos (2) minutos posteriores a la asignación. Las cancelaciones reiteradas cuando el Conductor ya se encuentra en ruta o en el punto de recojo generarán penalizaciones progresivas en la cuenta del Pasajero.</p>
+        <p><strong>10.2. Gestión de Incidencias:</strong> InCar pone a disposición un módulo de atención de reclamos asistido por Inteligencia Artificial directamente en WhatsApp para reportar incidencias operativas, cobros indebidos, objetos olvidados o conductas inadecuadas. InCar actuará como canal de comunicación para facilitar la resolución entre las partes, sin que ello implique asunción de responsabilidad económica por parte de la Plataforma.</p>
+
+        <h2 id="clausula-11">11. Suspensión y Terminación de Cuenta</h2>
+        <p>InCar podrá suspender temporalmente o dar de baja definitiva el acceso de cualquier Usuario (bloqueo de número telefónico y registro de identidad) sin previo aviso ni derecho a indemnización, en caso de verificarse: (a) incumplimiento de cualquiera de las cláusulas de estos Términos y Condiciones; (b) vencimiento o falsedad en los documentos del Conductor; (c) acumulación de reportes negativos verificados por mala conducta o inseguridad vial; (d) impago de comisiones devengadas; o (e) detección de actividad fraudulenta.</p>
+
+        <h2 id="clausula-12">12. Protección de Datos Personales</h2>
+        <p><strong>12.1. Marco Normativo:</strong> En estricto cumplimiento de la <strong>Ley N.° 29733 – Ley de Protección de Datos Personales</strong> y su Reglamento aprobado mediante Decreto Supremo N.° 003-2013-JUS, InCar garantiza la confidencialidad y seguridad de la información personal proporcionada por los Usuarios.</p>
+        <p><strong>12.2. Finalidad del Tratamiento:</strong> Los datos recopilados (número telefónico, nombre de perfil, coordenadas de geolocalización durante el servicio, historial de viajes y documentos de identificación vehicular) serán almacenados en bases de datos seguras y utilizados exclusivamente para: (i) ejecutar la intermediación del servicio de movilidad; (ii) validar la identidad y seguridad de los Conductores; (iii) prevenir fraudes y delitos; y (iv) atender consultas o requerimientos de autoridades competentes.</p>
+        <p><strong>12.3. Transferencia y Derechos ARCO:</strong> InCar únicamente comparte los datos mínimos indispensables entre Pasajero y Conductor (nombre, número de contacto, placa y modelo del vehículo) para la ejecución del viaje solicitado. InCar <strong>no vende, alquila ni comercializa</strong> datos personales a terceros. El Usuario podrá ejercer sus derechos de Acceso, Rectificación, Cancelación y Oposición (ARCO) solicitándolo a través de nuestro canal oficial de soporte.</p>
+
+        <h2 id="clausula-13">13. Limitación de Responsabilidad e Indemnidad</h2>
+        <p><strong>13.1. Exención de Responsabilidad:</strong> En la máxima medida permitida por la legislación peruana, InCar no será responsable por daños directos, indirectos, incidentales, lucro cesante, daño emergente o daño moral derivados de:</p>
+        <ul>
+            <li>Accidentes de tránsito, colisiones, lesiones personales o fallecimiento ocurridos antes, durante o después de la prestación del servicio de transporte, los cuales serán cubiertos exclusivamente por el SOAT del vehículo y la responsabilidad civil o penal del Conductor.</li>
+            <li>Robos, hurtos, agresiones o actos delictivos cometidos por terceros o por cualquiera de los Usuarios.</li>
+            <li>Objetos personales olvidados, extraviados o dañados en el interior de los vehículos.</li>
+            <li>Retrasos en los tiempos de llegada causados por congestión vehicular, desvíos, manifestaciones o casos fortuitos y de fuerza mayor.</li>
+        </ul>
+        <p><strong>13.2. Cláusula de Indemnidad:</strong> El Conductor y el Pasajero se obligan a mantener indemne a InCar, sus desarrolladores, administradores y afiliados frente a cualquier reclamación, demanda, multa administrativa o acción judicial interpuesta por terceros o autoridades como consecuencia de sus actos, omisiones o incumplimientos legales durante el uso del servicio.</p>
+
+        <h2 id="clausula-14">14. Propiedad Intelectual</h2>
+        <p>La marca denominativa y figurativa <strong>"InCar"</strong>, los flujos conversacionales, prompts, algoritmos de cálculo, bases de datos, diseños gráficos, stickers oficiales y el código fuente del sistema son propiedad exclusiva de sus titulares y se encuentran protegidos por las leyes peruanas e internacionales sobre propiedad intelectual y derechos de autor. Queda estrictamente prohibida su reproducción, ingeniería inversa, copia o explotación no autorizada.</p>
+
+        <h2 id="clausula-15">15. Modificaciones, Nulidad Parcial y Legislación Aplicable</h2>
+        <p><strong>15.1. Actualizaciones:</strong> InCar se reserva el derecho de modificar, actualizar o complementar los presentes Términos y Condiciones en cualquier momento. Toda modificación entrará en vigencia desde el instante de su publicación en este portal oficial. El uso continuado del servicio vía WhatsApp tras dicha publicación constituirá aceptación tácita e irrevocable de las nuevas condiciones.</p>
+        <p><strong>15.2. Nulidad Parcial:</strong> Si alguna disposición de este documento fuese declarada nula o inaplicable por autoridad competente, las demás cláusulas conservarán plena validez y eficacia jurídica.</p>
+        <p><strong>15.3. Ley Aplicable y Jurisdicción:</strong> El presente acuerdo se rige e interpreta de conformidad con las leyes de la República del Perú. Para cualquier controversia que pudiera surgir en relación con su validez, interpretación o ejecución, las partes se someten a la competencia y jurisdicción de los Jueces y Tribunales del distrito judicial correspondiente al domicilio operativo de InCar en el Perú.</p>
+
+        <footer>
+            <p><strong>InCar Perú – Plataforma Tecnológica de Intermediación de Movilidad</strong></p>
+            <p>© 2026 Todos los derechos reservados. Documento oficial publicado para consulta de Pasajeros y Conductores.</p>
+        </footer>
+    </div>
+</section>
+
+<!-- PANEL 2: MAPA VECTORIAL REAL OFFLINE DE HUANCAYO (MapLibre GL + PMTiles) -->
+<section class="panel" id="panel-mapa">
+    <div class="map-container">
+        <div class="map-box">
+            <div class="map-label">
+                <span>Mueve el mapa para ubicar el pin exacto</span>
+                <span>100% Vectorial Huancayo</span>
+            </div>
+            <div class="map-wrap">
+                <div id="huancayo-map"></div>
+                <div class="pin-shadow"></div>
+                <div class="center-pin-overlay" id="center-pin">
+                    <div class="pin-head" id="pin-head"><div class="pin-core"></div></div>
+                    <div class="pin-stem"></div>
+                </div>
+                <div class="coords-pill" id="coords-pill">📍 -12.06810, -75.21060</div>
+                <button type="button" class="btn-gps" id="btn-gps">🎯 Mi ubicación</button>
+                <div class="map-error-box" id="map-error">
+                    <strong>⚠️ Mapa disponible desde la web oficial</strong>
+                    <span id="map-error-msg">Abre este enlace desde GitHub Pages o un servidor HTTPS/localhost para cargar huancayo.pmtiles.</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="search-box">
+            <input type="text" id="search" placeholder="🔍 Busca plaza, universidad, clínica, avenida..." autocomplete="off">
+        </div>
+
+        <div class="tabs" id="tabs">
+            <button class="tab active" data-zone="TODOS" type="button">Todos</button>
+            <button class="tab" data-zone="CENTRO" type="button">Huancayo Centro</button>
+            <button class="tab" data-zone="TAMBO" type="button">El Tambo</button>
+            <button class="tab" data-zone="CHILCA" type="button">Chilca</button>
+            <button class="tab" data-zone="PERIFERIA" type="button">Pilcomayo / Cajas / Sapallanga</button>
+        </div>
+
+        <div class="list" id="points-list"></div>
+    </div>
+
+    <div class="bottom-bar">
+        <div class="bottom-inner">
+            <div class="selected-info" id="selected-label">📍 Parque Constitución (-12.06810, -75.21060)</div>
+            <button class="btn-send" id="btn-send" type="button">Enviar destino a InCar por WhatsApp ➤</button>
+        </div>
+    </div>
+</section>
+
+<script src="./maplibre-gl.js"></script>
+<script src="./pmtiles.js"></script>
+<script>
+    const TELEFONO_INCAR = "51955343460";
+
+    const PUNTOS_HYO = [
+        // HUANCAYO CENTRO
+        { id: 1, nombre: "Parque Constitución", ref: "Calle Real y Giráldez", zona: "CENTRO", lat: -12.0681, lng: -75.2106 },
+        { id: 2, nombre: "Real Plaza Huancayo", ref: "Av. Ferrocarril", zona: "CENTRO", lat: -12.0672, lng: -75.2065 },
+        { id: 3, nombre: "Open Plaza Huancayo", ref: "Av. Ferrocarril / San Carlos", zona: "CENTRO", lat: -12.0628, lng: -75.2048 },
+        { id: 4, nombre: "Plaza Huamanmarca", ref: "Calle Real y Ancash", zona: "CENTRO", lat: -12.0695, lng: -75.2098 },
+        { id: 5, nombre: "Mercado Modelo", ref: "Av. Ferrocarril y Cajamarca", zona: "CENTRO", lat: -12.0718, lng: -75.2062 },
+        { id: 6, nombre: "Mercado Mayorista (Raez Patiño)", ref: "Av. Ferrocarril y Huánuco", zona: "CENTRO", lat: -12.0752, lng: -75.2055 },
+        { id: 7, nombre: "Hospital Daniel Alcides Carrión", ref: "Av. Daniel A. Carrión", zona: "CENTRO", lat: -12.0744, lng: -75.2145 },
+        { id: 8, nombre: "Parque de la Identidad Wanka", ref: "San Carlos", zona: "CENTRO", lat: -12.0585, lng: -75.1975 },
+        { id: 9, nombre: "Universidad Continental", ref: "Av. San Carlos 1980", zona: "CENTRO", lat: -12.0478, lng: -75.1986 },
+        { id: 10, nombre: "Clínica Cayetano Heredia", ref: "Av. Huancavelica / José Olaya", zona: "CENTRO", lat: -12.0620, lng: -75.2135 },
+        { id: 11, nombre: "Terminal Terrestre Los Andes", ref: "Av. Ferrocarril / Ica", zona: "CENTRO", lat: -12.0731, lng: -75.2060 },
+        { id: 12, nombre: "Cerrito de la Libertad", ref: "Mirador / Av. Giráldez", zona: "CENTRO", lat: -12.0655, lng: -75.1955 },
+
+        // EL TAMBO
+        { id: 13, nombre: "UNCP (Ciudad Universitaria)", ref: "Av. Mariscal Castilla", zona: "TAMBO", lat: -12.0355, lng: -75.2368 },
+        { id: 14, nombre: "UPLA (Campus Chorrillos)", ref: "Chorrillos / Palián", zona: "TAMBO", lat: -12.0432, lng: -75.1935 },
+        { id: 15, nombre: "Óvalo Julio Sumar", ref: "Av. Mariscal Castilla y Evitamiento", zona: "TAMBO", lat: -12.0458, lng: -75.2265 },
+        { id: 16, nombre: "Terminal Terrestre Huancayo", ref: "Av. Evitamiento", zona: "TAMBO", lat: -12.0465, lng: -75.2320 },
+        { id: 17, nombre: "Hospital El Carmen", ref: "Jr. Puno / El Tambo", zona: "TAMBO", lat: -12.0578, lng: -75.2162 },
+        { id: 18, nombre: "Estadio Mariscal Castilla", ref: "Av. Ferrocarril / El Tambo", zona: "TAMBO", lat: -12.0545, lng: -75.2130 },
+        { id: 19, nombre: "Parque Bolognesi (El Tambo)", ref: "Calle Real / El Tambo", zona: "TAMBO", lat: -12.0548, lng: -75.2195 },
+        { id: 20, nombre: "Hospital Ramiro Prialé (EsSalud)", ref: "Av. Independencia", zona: "TAMBO", lat: -12.0438, lng: -75.2175 },
+        { id: 21, nombre: "Parque Andrés Avelino Cáceres", ref: "Siglo XX / El Tambo", zona: "TAMBO", lat: -12.0512, lng: -75.2218 },
+        { id: 22, nombre: "Óvalo de La Esperanza / Saños", ref: "Av. Esperanza", zona: "TAMBO", lat: -12.0385, lng: -75.2110 },
+
+        // CHILCA
+        { id: 23, nombre: "Parque Abel Martínez (Chilca)", ref: "Calle Real / Chilca", zona: "CHILCA", lat: -12.0835, lng: -75.2072 },
+        { id: 24, nombre: "Av. 9 de Diciembre y Calle Real", ref: "Paradero Principal Chilca", zona: "CHILCA", lat: -12.0862, lng: -75.2068 },
+        { id: 25, nombre: "Óvalo de Coto Coto", ref: "Av. Ferrocarril / Coto Coto", zona: "CHILCA", lat: -12.0885, lng: -75.2035 },
+        { id: 26, nombre: "Cuartel 9 de Diciembre", ref: "Av. 9 de Diciembre", zona: "CHILCA", lat: -12.0878, lng: -75.2135 },
+        { id: 27, nombre: "Parque de los Héroes (Chilca)", ref: "Av. Leoncio Prado", zona: "CHILCA", lat: -12.0822, lng: -75.2128 },
+        { id: 28, nombre: "Puente Comuneros (Lado Chilca)", ref: "Av. Daniel A. Carrión", zona: "CHILCA", lat: -12.0895, lng: -75.2245 },
+
+        // PERIFERIA / DISTRITOS CERCANOS
+        { id: 29, nombre: "Plaza Principal de Pilcomayo", ref: "Puente Breña / Pilcomayo", zona: "PERIFERIA", lat: -12.0492, lng: -75.2495 },
+        { id: 30, nombre: "Puente Breña (Ingreso Pilcomayo)", ref: "Av. Mariscal Castilla / Río", zona: "PERIFERIA", lat: -12.0525, lng: -75.2385 },
+        { id: 31, nombre: "Plaza de San Agustín de Cajas", ref: "Carretera Central Norte", zona: "PERIFERIA", lat: -12.0125, lng: -75.2465 },
+        { id: 32, nombre: "Plaza Principal de Huancán", ref: "Carretera Central Sur", zona: "PERIFERIA", lat: -12.1045, lng: -75.2032 },
+        { id: 33, nombre: "Plaza Principal de Sapallanga", ref: "Sur de Huancayo", zona: "PERIFERIA", lat: -12.1415, lng: -75.1895 }
+    ];
+
+    const tabTyc = document.getElementById("tab-tyc");
+    const tabMapa = document.getElementById("tab-mapa");
+    const panelTyc = document.getElementById("panel-tyc");
+    const panelMapa = document.getElementById("panel-mapa");
+    const btnAbrirMapa = document.getElementById("btn-abrir-mapa");
+    const listEl = document.getElementById("points-list");
+    const searchInput = document.getElementById("search");
+    const selectedLabel = document.getElementById("selected-label");
+    const btnSend = document.getElementById("btn-send");
+    const centerPinEl = document.getElementById("center-pin");
+    const coordsPillEl = document.getElementById("coords-pill");
+    const btnGps = document.getElementById("btn-gps");
+    const mapErrorBox = document.getElementById("map-error");
+
+    let map = null;
+    let mapIniciado = false;
+    let selectedId = 1;
+    let currentLat = -12.0681;
+    let currentLng = -75.2106;
+    let currentRef = "Parque Constitución";
+    let puntoSeleccionadoManual = { lat: -12.0681, lng: -75.2106, nombre: "Parque Constitución" };
+    let currentZone = "TODOS";
+    let searchQuery = "";
+
+    function distMetros(lat1, lon1, lat2, lon2) {
+        const R = 6371e3;
+        const rad = Math.PI / 180;
+        const dLat = (lat2 - lat1) * rad;
+        const dLon = (lon2 - lon1) * rad;
+        const a = Math.sin(dLat / 2) ** 2 + Math.cos(lat1 * rad) * Math.cos(lat2 * rad) * Math.sin(dLon / 2) ** 2;
+        return R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+    }
+
+    function obtenerReferenciaCercana(lat, lng) {
+        if (puntoSeleccionadoManual && distMetros(lat, lng, puntoSeleccionadoManual.lat, puntoSeleccionadoManual.lng) <= 55) {
+            return puntoSeleccionadoManual.nombre;
+        }
+        if (map && map.loaded()) {
+            try {
+                const canvas = map.getCanvas();
+                const cx = canvas.clientWidth / 2;
+                const cy = canvas.clientHeight / 2;
+                const box = [[cx - 22, cy - 22], [cx + 22, cy + 22]];
+                const feats = map.queryRenderedFeatures(box, {
+                    layers: ["pois-labels", "places-labels", "roads-labels", "pois-layer", "places-layer", "roads-major", "roads-minor"]
+                });
+                const conNombre = feats.find(f => f.properties && (f.properties["name:es"] || f.properties.name));
+                if (conNombre) {
+                    return String(conNombre.properties["name:es"] || conNombre.properties.name).trim();
+                }
+            } catch (_) {}
+        }
+        let mejor = null;
+        let mejorDist = Infinity;
+        for (const p of PUNTOS_HYO) {
+            const d = distMetros(lat, lng, p.lat, p.lng);
+            if (d < mejorDist) {
+                mejorDist = d;
+                mejor = p;
+            }
+        }
+        if (mejor && mejorDist <= 140) return mejor.nombre;
+        if (mejor && mejorDist <= 650) return `Cerca a ${mejor.nombre}`;
+        return "Punto en Huancayo";
+    }
+
+    function actualizarBarra() {
+        const latTxt = Number(currentLat).toFixed(5);
+        const lngTxt = Number(currentLng).toFixed(5);
+
+        btnSend.textContent = "Enviar destino a InCar por WhatsApp ➤";
+        btnSend.disabled = false;
+        coordsPillEl.textContent = `📍 ${latTxt}, ${lngTxt} • ${currentRef}`;
+        selectedLabel.innerHTML = `🏁 Destino: <strong>${currentRef}</strong> (${latTxt}, ${lngTxt})`;
+    }
+
+    function initMapaVectorial() {
+        if (mapIniciado) {
+            setTimeout(() => { if (map) map.resize(); }, 60);
+            return;
+        }
+        mapIniciado = true;
+
+        try {
+            const protocol = new pmtiles.Protocol();
+            maplibregl.addProtocol("pmtiles", protocol.tile);
+
+            const styleOffline = {
+                version: 8,
+                glyphs: "./fonts/{fontstack}/{range}.pbf",
+                sources: {
+                    huancayo: {
+                        type: "vector",
+                        url: "pmtiles://./huancayo.pmtiles"
+                    }
+                },
+                layers: [
+                    { id: "bg", type: "background", paint: { "background-color": "#0d1526" } },
+                    {
+                        id: "earth",
+                        type: "fill",
+                        source: "huancayo",
+                        "source-layer": "earth",
+                        paint: { "fill-color": "#111b2e" }
+                    },
+                    {
+                        id: "landuse-parks",
+                        type: "fill",
+                        source: "huancayo",
+                        "source-layer": "landuse",
+                        filter: ["in", ["get", "kind"], ["literal", ["park", "forest", "garden", "pitch", "recreation_ground", "grass", "cemetery", "playground"]]],
+                        paint: { "fill-color": "#133529", "fill-opacity": 0.9 }
+                    },
+                    {
+                        id: "landuse-urban",
+                        type: "fill",
+                        source: "huancayo",
+                        "source-layer": "landuse",
+                        filter: ["in", ["get", "kind"], ["literal", ["university", "college", "school", "hospital", "retail", "commercial", "industrial"]]],
+                        paint: { "fill-color": "#18263e", "fill-opacity": 0.8 }
+                    },
+                    {
+                        id: "water-fill",
+                        type: "fill",
+                        source: "huancayo",
+                        "source-layer": "water",
+                        paint: { "fill-color": "#0c4a6e" }
+                    },
+                    {
+                        id: "water-line",
+                        type: "line",
+                        source: "huancayo",
+                        "source-layer": "water",
+                        paint: { "line-color": "#0284c7", "line-width": 2.5 }
+                    },
+                    {
+                        id: "buildings",
+                        type: "fill",
+                        source: "huancayo",
+                        "source-layer": "buildings",
+                        minzoom: 13,
+                        paint: {
+                            "fill-color": "#1d2a42",
+                            "fill-outline-color": "#2a3b59",
+                            "fill-opacity": 0.88
+                        }
+                    },
+                    {
+                        id: "boundaries",
+                        type: "line",
+                        source: "huancayo",
+                        "source-layer": "boundaries",
+                        paint: {
+                            "line-color": "#475569",
+                            "line-width": 1.2,
+                            "line-dasharray": [3, 3]
+                        }
+                    },
+                    {
+                        id: "roads-minor",
+                        type: "line",
+                        source: "huancayo",
+                        "source-layer": "roads",
+                        filter: ["!", ["in", ["get", "kind"], ["literal", ["highway", "major_road", "trunk", "primary", "motorway"]]]],
+                        layout: { "line-cap": "round", "line-join": "round" },
+                        paint: {
+                            "line-color": "#3f4f66",
+                            "line-width": ["interpolate", ["linear"], ["zoom"], 11, 0.8, 15, 3.2, 18, 6.5]
+                        }
+                    },
+                    {
+                        id: "roads-major-casing",
+                        type: "line",
+                        source: "huancayo",
+                        "source-layer": "roads",
+                        filter: ["in", ["get", "kind"], ["literal", ["highway", "major_road", "trunk", "primary", "motorway"]]],
+                        layout: { "line-cap": "round", "line-join": "round" },
+                        paint: {
+                            "line-color": "#064e3b",
+                            "line-width": ["interpolate", ["linear"], ["zoom"], 11, 2.8, 15, 7, 18, 12]
+                        }
+                    },
+                    {
+                        id: "roads-major",
+                        type: "line",
+                        source: "huancayo",
+                        "source-layer": "roads",
+                        filter: ["in", ["get", "kind"], ["literal", ["highway", "major_road", "trunk", "primary", "motorway"]]],
+                        layout: { "line-cap": "round", "line-join": "round" },
+                        paint: {
+                            "line-color": "#10b981",
+                            "line-width": ["interpolate", ["linear"], ["zoom"], 11, 1.5, 15, 4.5, 18, 8.5]
+                        }
+                    },
+                    {
+                        id: "pois-layer",
+                        type: "circle",
+                        source: "huancayo",
+                        "source-layer": "pois",
+                        minzoom: 13,
+                        paint: {
+                            "circle-radius": 3.5,
+                            "circle-color": "#34d399",
+                            "circle-stroke-color": "#064e3b",
+                            "circle-stroke-width": 1
+                        }
+                    },
+                    {
+                        id: "places-layer",
+                        type: "circle",
+                        source: "huancayo",
+                        "source-layer": "places",
+                        minzoom: 10,
+                        paint: {
+                            "circle-radius": 4,
+                            "circle-color": "#38bdf8",
+                            "circle-opacity": 0.45
+                        }
+                    },
+                    {
+                        id: "roads-labels",
+                        type: "symbol",
+                        source: "huancayo",
+                        "source-layer": "roads",
+                        minzoom: 12,
+                        layout: {
+                            "symbol-placement": "line",
+                            "text-field": ["coalesce", ["get", "name:es"], ["get", "name"]],
+                            "text-font": ["Noto Sans Regular"],
+                            "text-size": ["interpolate", ["linear"], ["zoom"], 12, 10, 15, 12.5, 18, 15],
+                            "symbol-spacing": 220,
+                            "text-max-angle": 30
+                        },
+                        paint: {
+                            "text-color": "#f8fafc",
+                            "text-halo-color": "#0b1120",
+                            "text-halo-width": 1.6
+                        }
+                    },
+                    {
+                        id: "pois-labels",
+                        type: "symbol",
+                        source: "huancayo",
+                        "source-layer": "pois",
+                        minzoom: 14,
+                        layout: {
+                            "text-field": ["coalesce", ["get", "name:es"], ["get", "name"]],
+                            "text-font": ["Noto Sans Regular"],
+                            "text-size": 11,
+                            "text-offset": [0, 0.9],
+                            "text-anchor": "top",
+                            "text-max-width": 9
+                        },
+                        paint: {
+                            "text-color": "#6ee7b7",
+                            "text-halo-color": "#0b1120",
+                            "text-halo-width": 1.5
+                        }
+                    },
+                    {
+                        id: "places-labels",
+                        type: "symbol",
+                        source: "huancayo",
+                        "source-layer": "places",
+                        layout: {
+                            "text-field": ["coalesce", ["get", "name:es"], ["get", "name"]],
+                            "text-font": ["Noto Sans Regular"],
+                            "text-size": ["interpolate", ["linear"], ["zoom"], 10, 12, 14, 15, 17, 17],
+                            "text-max-width": 8
+                        },
+                        paint: {
+                            "text-color": "#ffffff",
+                            "text-halo-color": "#0b1120",
+                            "text-halo-width": 1.8
+                        }
+                    }
+                ]
+            };
+
+            map = new maplibregl.Map({
+                container: "huancayo-map",
+                style: styleOffline,
+                center: [-75.2106, -12.0681],
+                zoom: 15,
+                maxZoom: 18,
+                minZoom: 11,
+                maxBounds: [[-75.32, -12.16], [-75.12, -11.95]],
+                attributionControl: false
+            });
+
+            map.addControl(new maplibregl.NavigationControl({ showCompass: false }), "top-right");
+
+            // Marcadores de los 33 puntos rápidos en el mapa
+            PUNTOS_HYO.forEach(p => {
+                const dot = document.createElement("div");
+                dot.className = "hyo-dot";
+                dot.title = `${p.nombre} (${p.ref})`;
+                dot.addEventListener("click", (ev) => {
+                    ev.stopPropagation();
+                    selectPoint(p);
+                });
+                new maplibregl.Marker({ element: dot })
+                    .setLngLat([p.lng, p.lat])
+                    .addTo(map);
+            });
+
+            map.on("movestart", () => {
+                centerPinEl.classList.add("moving");
+            });
+
+            map.on("move", () => {
+                const c = map.getCenter();
+                currentLat = Number(c.lat.toFixed(6));
+                currentLng = Number(c.lng.toFixed(6));
+                coordsPillEl.textContent = `📍 ${currentLat.toFixed(5)}, ${currentLng.toFixed(5)}`;
+            });
+
+            map.on("moveend", () => {
+                centerPinEl.classList.remove("moving");
+                const c = map.getCenter();
+                currentLat = Number(c.lat.toFixed(6));
+                currentLng = Number(c.lng.toFixed(6));
+                currentRef = obtenerReferenciaCercana(currentLat, currentLng);
+
+                if (puntoSeleccionadoManual && distMetros(currentLat, currentLng, puntoSeleccionadoManual.lat, puntoSeleccionadoManual.lng) > 80) {
+                    selectedId = null;
+                    renderList();
+                }
+                actualizarBarra();
+            });
+
+            map.on("error", (e) => {
+                const msg = e?.error?.message || "";
+                if (window.location.protocol === "file:" || /Failed to fetch|Byte Serving|range/i.test(msg)) {
+                    mapErrorBox.classList.add("visible");
+                }
+            });
+        } catch (err) {
+            console.error("Error iniciando MapLibre:", err);
+            mapErrorBox.classList.add("visible");
+        }
+    }
+
+    function mostrarTab(cual) {
+        if (cual === "mapa") {
+            tabTyc.classList.remove("active");
+            tabMapa.classList.add("active");
+            panelTyc.classList.remove("active");
+            panelMapa.classList.add("active");
+            document.body.classList.add("mapa-activo");
+            initMapaVectorial();
+            window.scrollTo({ top: 0, behavior: "smooth" });
+        } else {
+            tabMapa.classList.remove("active");
+            tabTyc.classList.add("active");
+            panelMapa.classList.remove("active");
+            panelTyc.classList.add("active");
+            document.body.classList.remove("mapa-activo");
+            window.scrollTo({ top: 0, behavior: "smooth" });
+        }
+    }
+
+    tabTyc.addEventListener("click", () => mostrarTab("tyc"));
+    tabMapa.addEventListener("click", () => mostrarTab("mapa"));
+    if (btnAbrirMapa) btnAbrirMapa.addEventListener("click", () => mostrarTab("mapa"));
+
+    if (window.location.hash === "#mapa" || new URLSearchParams(window.location.search).get("tab") === "mapa") {
+        mostrarTab("mapa");
+    }
+
+    btnGps.addEventListener("click", () => {
+        if (!navigator.geolocation) return;
+        btnGps.textContent = "📡 Buscando...";
+        navigator.geolocation.getCurrentPosition(
+            (pos) => {
+                const lat = pos.coords.latitude;
+                const lng = pos.coords.longitude;
+                btnGps.textContent = "🎯 Mi ubicación";
+                puntoSeleccionadoManual = { lat, lng, nombre: "Mi ubicación GPS" };
+                currentLat = Number(lat.toFixed(6));
+                currentLng = Number(lng.toFixed(6));
+                currentRef = "Mi ubicación GPS";
+                if (map) {
+                    map.flyTo({ center: [lng, lat], zoom: 16.5, essential: true });
+                }
+                actualizarBarra();
+            },
+            () => {
+                btnGps.textContent = "🎯 Mi ubicación";
+            },
+            { enableHighAccuracy: true, timeout: 8000 }
+        );
+    });
+
+    function renderList() {
+        listEl.innerHTML = "";
+        const filtered = PUNTOS_HYO.filter(p => {
+            const matchZone = currentZone === "TODOS" || p.zona === currentZone;
+            const text = (p.nombre + " " + p.ref).toLowerCase();
+            const matchSearch = text.includes(searchQuery.toLowerCase());
+            return matchZone && matchSearch;
+        });
+
+        filtered.forEach(p => {
+            const div = document.createElement("div");
+            div.className = `item ${selectedId === p.id ? "selected" : ""}`;
+            div.innerHTML = `
+                <div>
+                    <div class="item-title">📍 ${p.nombre}</div>
+                    <div class="item-sub">${p.ref}</div>
+                </div>
+                <span class="zone-tag">${p.zona}</span>
+            `;
+            div.addEventListener("click", () => selectPoint(p));
+            listEl.appendChild(div);
+        });
+    }
+
+    function selectPoint(point) {
+        selectedId = point.id;
+        puntoSeleccionadoManual = { lat: point.lat, lng: point.lng, nombre: point.nombre };
+        currentLat = Number(point.lat.toFixed(6));
+        currentLng = Number(point.lng.toFixed(6));
+        currentRef = point.nombre;
+        actualizarBarra();
+        renderList();
+        if (map) {
+            map.flyTo({ center: [point.lng, point.lat], zoom: 16.5, essential: true });
+        }
+    }
+
+    searchInput.addEventListener("input", (e) => {
+        searchQuery = e.target.value;
+        renderList();
+    });
+
+    document.querySelectorAll(".tab").forEach(tab => {
+        tab.addEventListener("click", () => {
+            document.querySelectorAll(".tab").forEach(t => t.classList.remove("active"));
+            tab.classList.add("active");
+            currentZone = tab.dataset.zone;
+            renderList();
+        });
+    });
+
+    btnSend.addEventListener("click", () => {
+        const latFixed = Number(currentLat).toFixed(6);
+        const lngFixed = Number(currentLng).toFixed(6);
+        const mensaje = `DESTINO: ${latFixed}, ${lngFixed} | ${currentRef}`;
+        const url = `https://wa.me/${TELEFONO_INCAR}?text=${encodeURIComponent(mensaje)}`;
+        window.location.href = url;
+    });
+
+    if ("serviceWorker" in navigator) {
+        navigator.serviceWorker.register("./sw.js").then(() => {
+            console.log("InCar Vectorial Offline listo (TyC + MapLibre + PMTiles)");
+        }).catch(err => console.error("Error SW:", err));
+    }
+
+    function updateOnlineStatus() {
+        const badge = document.getElementById("offline-status");
+        if (navigator.onLine) {
+            badge.textContent = "Guardado para uso offline";
+        } else {
+            badge.textContent = "⚡ Modo Sin Internet Activo";
+        }
+    }
+    window.addEventListener("online", updateOnlineStatus);
+    window.addEventListener("offline", updateOnlineStatus);
+    updateOnlineStatus();
+
+    actualizarBarra();
+    renderList();
+</script>
+</body>
+</html>
