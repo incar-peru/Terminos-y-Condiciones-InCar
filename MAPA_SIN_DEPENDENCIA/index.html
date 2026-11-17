@@ -695,11 +695,6 @@
 <!-- PANEL 2: MAPA VECTORIAL REAL OFFLINE DE HUANCAYO (MapLibre GL + PMTiles) -->
 <section class="panel" id="panel-mapa">
     <div class="map-container">
-        <div class="mode-switch">
-            <button class="mode-btn active" id="mode-destino" type="button">🏁 Enviar como DESTINO</button>
-            <button class="mode-btn" id="mode-recojo" type="button">📍 Enviar como RECOJO</button>
-        </div>
-
         <div class="map-box">
             <div class="map-label">
                 <span>Mueve el mapa para ubicar el pin exacto</span>
@@ -801,10 +796,7 @@
     const searchInput = document.getElementById("search");
     const selectedLabel = document.getElementById("selected-label");
     const btnSend = document.getElementById("btn-send");
-    const btnModoDestino = document.getElementById("mode-destino");
-    const btnModoRecojo = document.getElementById("mode-recojo");
     const centerPinEl = document.getElementById("center-pin");
-    const pinHeadEl = document.getElementById("pin-head");
     const coordsPillEl = document.getElementById("coords-pill");
     const btnGps = document.getElementById("btn-gps");
     const mapErrorBox = document.getElementById("map-error");
@@ -818,7 +810,6 @@
     let puntoSeleccionadoManual = { lat: -12.0681, lng: -75.2106, nombre: "Parque Constitución" };
     let currentZone = "TODOS";
     let searchQuery = "";
-    let modoEnvio = "DESTINO";
 
     function distMetros(lat1, lon1, lat2, lon2) {
         const R = 6371e3;
@@ -863,16 +854,13 @@
     }
 
     function actualizarBarra() {
-        const pref = modoEnvio === "DESTINO" ? "destino" : "punto de recojo";
-        const icono = modoEnvio === "DESTINO" ? "🏁 Destino" : "📍 Recojo";
         const latTxt = Number(currentLat).toFixed(5);
         const lngTxt = Number(currentLng).toFixed(5);
 
-        btnSend.textContent = `Enviar ${pref} a InCar por WhatsApp ➤`;
+        btnSend.textContent = "Enviar destino a InCar por WhatsApp ➤";
         btnSend.disabled = false;
         coordsPillEl.textContent = `📍 ${latTxt}, ${lngTxt} • ${currentRef}`;
-        selectedLabel.innerHTML = `${icono}: <strong>${currentRef}</strong> (${latTxt}, ${lngTxt})`;
-        pinHeadEl.classList.toggle("recojo", modoEnvio === "RECOJO");
+        selectedLabel.innerHTML = `🏁 Destino: <strong>${currentRef}</strong> (${latTxt}, ${lngTxt})`;
     }
 
     function initMapaVectorial() {
@@ -1169,20 +1157,6 @@
         mostrarTab("mapa");
     }
 
-    btnModoDestino.addEventListener("click", () => {
-        modoEnvio = "DESTINO";
-        btnModoDestino.classList.add("active");
-        btnModoRecojo.classList.remove("active");
-        actualizarBarra();
-    });
-
-    btnModoRecojo.addEventListener("click", () => {
-        modoEnvio = "RECOJO";
-        btnModoRecojo.classList.add("active");
-        btnModoDestino.classList.remove("active");
-        actualizarBarra();
-    });
-
     btnGps.addEventListener("click", () => {
         if (!navigator.geolocation) return;
         btnGps.textContent = "📡 Buscando...";
@@ -1261,7 +1235,7 @@
     btnSend.addEventListener("click", () => {
         const latFixed = Number(currentLat).toFixed(6);
         const lngFixed = Number(currentLng).toFixed(6);
-        const mensaje = `${modoEnvio}: ${latFixed}, ${lngFixed} | ${currentRef}`;
+        const mensaje = `DESTINO: ${latFixed}, ${lngFixed} | ${currentRef}`;
         const url = `https://wa.me/${TELEFONO_INCAR}?text=${encodeURIComponent(mensaje)}`;
         window.location.href = url;
     });

@@ -1,4 +1,4 @@
-const CACHE_NAME = "incar-huancayo-offline-v3";
+const CACHE_NAME = "incar-huancayo-offline-v4";
 const ASSETS = [
     "./",
     "./index.html",
